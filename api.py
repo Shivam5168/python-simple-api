@@ -5,7 +5,7 @@ from typing import Optional
 from dotenv import load_dotenv
 from mssql_python import connect
 
-# Load variables from .env file
+# Load variables from .env file load
 load_dotenv()
 CONNECTION_STRING = os.getenv("SQL_CONNECTION_STRING")
 
