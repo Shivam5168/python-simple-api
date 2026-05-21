@@ -30,7 +30,7 @@ jobs:
           pip install --upgrade pip
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-      # FIX: We intentionally exclude local 'venv' or 'antenv' folders from the zip artifact.
+      # FIX: We intentionally exclude local 'venv ' or 'antenv' folders from the zip artifact.
       # This keeps the upload fast. Azure will build its own clean production venv using your requirements.txt file.
       - name: Upload Artifact for Deployment Job
         uses: actions/upload-artifact@v4
