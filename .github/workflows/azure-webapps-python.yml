@@ -19,17 +19,19 @@ jobs:
         with:
           python-version: '3.13'
 
+      # We only use this local venv to run quick checks or testing scripts if needed
       - name: Create and activate virtual environment
         run: |
           python -m venv venv
           source venv/bin/activate
 
-      - name: Install Dependencies
+      - name: Install Dependencies locally
         run: |
           pip install --upgrade pip
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-      # FIX: Explicit structural paths target your code directly while skipping the venv directory completely
+      # FIX: We intentionally exclude local 'venv' or 'antenv' folders from the zip artifact.
+      # This keeps the upload fast. Azure will build its own clean production venv using your requirements.txt file.
       - name: Upload Artifact for Deployment Job
         uses: actions/upload-artifact@v4
         with:
@@ -38,6 +40,7 @@ jobs:
             ./*
             !.github
             !venv
+            !antenv
 
   deploy:
     runs-on: ubuntu-latest
