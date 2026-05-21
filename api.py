@@ -18,7 +18,7 @@ class Item(BaseModel):
 
 @app.get("/")
 def home():
-    return {"status": "Connected to Azure SQL API!"}
+    return {"status": "Connected to Azure SQL API! Thanks"}
 
 @app.get("/items/{item_id}")
 def get_item(item_id: int):
