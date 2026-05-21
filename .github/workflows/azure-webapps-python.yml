@@ -18,23 +18,7 @@ jobs:
         with:
           python-version: '3.13'
 
-      - name: Create and activate virtual environment
-        run: |
-          python -m venv venv
-          source venv/bin/activate
-
-      - name: Install Dependencies
-        run: |
-          pip install --upgrade pip
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-
-      - name: Upload Artifact for Deployment Job
-        uses: actions/upload-artifact@v4
-        with:
-          name: python-app
-          path: |
-            .
-            !venv
+      # ... (Keep your python venv, install, and upload-artifact steps exactly the same) ...
 
   deploy:
     runs-on: ubuntu-latest
@@ -48,15 +32,10 @@ jobs:
         with:
           name: python-app
 
-      # NO SUBSCRIPTION ID: Authenticates purely with your Tenant, Client ID, and Secret
-      - name: Log in to Azure
-        uses: azure/login@v2
-        with:
-          allow-no-subscriptions: true
-          creds: '{"clientId":"${{ secrets.AZURE_CLIENT_ID }}","clientSecret":"${{ secrets.AZURE_CLIENT_SECRET }}","tenantId":"${{ secrets.AZURE_TENANT_ID }}"}'
-
+      # ZERO SUBSCRIPTION CHECK: Deploys using isolated app-level token credentials
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
           app-name: ${{ secrets.AZURE_APP_NAME }}
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
           package: .
