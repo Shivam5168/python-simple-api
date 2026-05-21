@@ -49,7 +49,7 @@ jobs:
       name: 'Production'
 
     steps:
-      - name: Download Artifact from Build Job
+      - name: Download Artifact from Build jobs
         uses: actions/download-artifact@v4
         with:
           name: python-app
