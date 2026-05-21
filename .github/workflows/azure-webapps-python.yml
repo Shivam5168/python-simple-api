@@ -9,6 +9,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout Source Code
         uses: actions/checkout@v4
@@ -18,7 +19,25 @@ jobs:
         with:
           python-version: '3.13'
 
-      # ... (Keep your python venv, install, and upload-artifact steps exactly the same) ...
+      - name: Create and activate virtual environment
+        run: |
+          python -m venv venv
+          source venv/bin/activate
+
+      - name: Install Dependencies
+        run: |
+          pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      # FIX: Explicit structural paths target your code directly while skipping the venv directory completely
+      - name: Upload Artifact for Deployment Job
+        uses: actions/upload-artifact@v4
+        with:
+          name: python-app
+          path: |
+            ./*
+            !.github
+            !venv
 
   deploy:
     runs-on: ubuntu-latest
@@ -32,7 +51,7 @@ jobs:
         with:
           name: python-app
 
-      # ZERO SUBSCRIPTION CHECK: Deploys using isolated app-level token credentials
+      # ZERO SUBSCRIPTION CHECK: Deploys directly using your isolated publish profile token
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
